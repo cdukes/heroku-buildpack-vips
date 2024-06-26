@@ -3,6 +3,8 @@ FROM heroku/heroku:$STACK_VERSION
 
 ENV DEBIAN_FRONTEND noninteractive
 
+USER root
+
 RUN apt-get update \
   && apt-get install -y \
     build-essential \
@@ -10,9 +12,8 @@ RUN apt-get update \
     wget \
     python3-pip \
     ninja-build \
+    meson \
     pkg-config
-
-RUN pip3 install meson
 
 # use the heroku platform libraries when we can
 #
@@ -82,7 +83,7 @@ RUN wget ${VIPS_URL}/v${VIPS_VERSION}/v${VIPS_VERSION}.tar.gz \
     # modules cause issues with loading heif files in ruby-vips \
 	  -Dmodules=disabled \
     # allows omitting gobject-introspection library \
-	  -Dintrospection=false \
+	  -Dintrospection=disabled \
 	&& cd build \
 	&& meson compile \
 	&& meson install
