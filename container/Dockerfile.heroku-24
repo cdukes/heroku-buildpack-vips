@@ -8,11 +8,11 @@ USER root
 RUN apt-get update \
   && apt-get install -y \
     build-essential \
-    libtool \
-    wget \
-    python3-pip \
     ninja-build \
+    python3-pip \
+    bc \
     meson \
+    wget \
     pkg-config
 
 # use the heroku platform libraries when we can
@@ -24,26 +24,25 @@ RUN apt-get update \
 # this should only pull in header files and should not create any extra run
 # time dependencies
 RUN apt-get install -y \
-  glib-2.0-dev \
-  libexpat1-dev \
-  libpango1.0-dev \
-  librsvg2-dev \
-  libpng-dev \
+  libfftw3-dev \
+  libgsf-1-dev \
+  libglib2.0-dev \
+  liborc-dev \
   libwebp-dev \
   libjpeg-turbo8-dev \
-  libtiff5-dev \
+  libexpat1-dev \
   libexif-dev \
-  liblcms2-dev \
-  libxml2-dev \
-  libfftw3-dev \
-  libopenexr-dev \
-  libopenjp2-7-dev \
+  libtiff5-dev \
   libpoppler-glib-dev \
+  librsvg2-dev \
+  liblcms2-dev \
   libimagequant-dev \
-  liborc-0.4-dev \
-  libgsf-1-dev \
   libcgif-dev \
   libheif-dev
+
+# glib-2.0-dev \
+# libpng-dev \
+# libxml2-dev \
 
 WORKDIR /usr/local/src
 
@@ -53,18 +52,6 @@ WORKDIR /usr/local/src
 #  - heroku has a basic dir structure in /usr/local, but no files
 ARG PREFIX=/usr/local
 ENV PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
-
-# use libspng for PNG load and save
-ARG SPNG_VERSION=0.7.4
-ARG SPNG_URL=https://github.com/randy408/libspng/archive/refs/tags
-
-RUN wget ${SPNG_URL}/v${SPNG_VERSION}.tar.gz \
-  && tar xf v${SPNG_VERSION}.tar.gz \
-  && cd libspng-${SPNG_VERSION} \
-  && meson build --prefix=${PREFIX} --libdir=lib \
-  && cd build \
-  && ninja \
-  && ninja install
 
 ARG VIPS_VERSION=8.15.2
 ARG VIPS_URL=https://github.com/libvips/libvips/archive/refs/tags
